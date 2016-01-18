@@ -1,0 +1,18 @@
+<?php
+
+define("MAINHOST", 'http://test.gitgis.com');
+define("MAINURL", '/whatsapp');
+
+error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE & ~E_DEPRECATED);
+
+$config = array();
+$config['db'] = array();
+$config['db']['host'] = "127.0.0.1";
+$config['db']['user'] = "root";
+$config['db']['pass'] = "";
+$config['db']['name'] = "whatsapp";
+
+$config['limits'] = array();
+$config['limits']['sendTotal'] = 1000;
+$config['limits']['sendGroup'] = 100;
+

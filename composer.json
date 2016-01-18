@@ -1,0 +1,16 @@
+{
+    "autoload": {
+        "psr-0": {"GitGis\\": "src/"}
+    },
+    "require": {
+        "twig/twig": "1.*",
+        "slim/slim": "2.*",
+        "slim/extras": "dev-master",
+        "slim/strong": "dev-master",
+        "slim/views": "dev-master",
+        "vlucas/valitron": "dev-master",
+        "zeuxisoo/slim-whoops": "dev-master",
+        "filp/whoops": "dev-master",
+        "whatsapp/chat-api": "^3.1"
+    }
+}
