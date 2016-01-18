@@ -1,0 +1,65 @@
+{% extends "base.twig.html" %}
+
+{% block content %}
+<h2>User edit</h2>
+<hr />
+
+{% if errors %}
+<div class="alert alert-error">
+{% for fieldErrors in errors %}
+{% for fieldError in fieldErrors %}
+{{ fieldError }}<br/>
+{% endfor %}
+{% endfor %}
+</div>
+{% endif %}
+
+{% if flash['info'] %}
+<div class="alert alert-info">
+{{ flash['info'] }}
+</div>
+{% endif %}
+
+
+<form class="form-horizontal" method="POST">
+	<div class="control-group">
+		<label class="control-label" for="inputUsername">Login</label>
+		<div class="controls">
+			<input name="username" value="{{ item.username }}" type="text" id="inputUsername" {% if id %}readonly="readonly"{% endif %} placeholder="Login" />
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="inputPassword">Password</label>
+		<div class="controls">
+			<input name="password" value="" type="password" id="inputPassword" />
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="inputRepeat">Password repeat</label>
+		<div class="controls">
+			<input name="repeat" value="" type="password" id="inputRepeat" />
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputRepeat">Roles</label>
+		<div class="controls">
+			<label class="checkbox">
+				<input name="roles[]" value="ADMIN" type="checkbox" {% if wordInString('ADMIN', item.roles) %}checked="checked"{% endif %} /> Admin
+			</label>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputCredits">Credits left</label>
+		<div class="controls">
+			<input name="credits" value="{{ item.credits }}" type="number" id="inputCredits" />
+		</div>
+	</div>
+
+	<div class="form-actions">
+		<button type="submit" class="btn btn-primary"><i class="icon-save"></i> Save</button>
+	</div>
+</form>
+
+{% endblock %}

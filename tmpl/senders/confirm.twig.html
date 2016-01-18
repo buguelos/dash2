@@ -1,0 +1,49 @@
+{% extends "base.twig.html" %}
+
+
+{% block content %}
+<h2>Confirm Sender</h2>
+<hr />
+
+{% if errors %}
+<div class="alert alert-error">
+<pre>
+{% for fieldErrors in errors %}
+{% for fieldError in fieldErrors %}
+{{ fieldError }}<br/>
+{% endfor %}
+{% endfor %}
+</pre>
+</div>
+{% endif %}
+
+<form class="form-horizontal" method="POST">
+	<div class="control-group">
+		<label class="control-label" for="inputNickname">Nickname</label>
+		<div class="controls">
+			<input name="nickname" value="{{ item.nickname }}" type="text" id="inputNickname" readonly="readonly" placeholder="Nickname" />
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="inputUsername">MSISDN</label>
+		<div class="controls">
+			<input name="username" value="{{ item.username }}" type="text" id="inputUsername" readonly="readonly" placeholder="MSISDN" />
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="inputSms">SMS Code</label>
+		<div class="controls">
+			<input name="smscode" type="text" id="inputSms" autofocus="autofocus" />
+			<span class="help-inline">you will get the code within few minutes</span>
+		</div>
+	</div>
+
+	<div class="form-actions">
+		<button type="submit" class="btn btn-primary"><i class="icon-save"></i> Save</button>
+	</div>
+</form>
+
+{% endblock %}
+
+
+

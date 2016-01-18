@@ -1,0 +1,4 @@
+"Group / Phone","Message","Total sent","Total received","Total fail","Status","Job created","Date sent"
+{% for row in reportTable %}
+"{{ row.group }} ({{ row.groupCnt }} contacts)","{{ row.msg }}","{{ row.sentCnt }}","{{ row.recvCnt }}","{{ row.sentCnt - row.recvCnt }}","{{ row.status }}","{{ row.ctime | date('Y-m-d h:i:s') }}","{{ row.sent_time | date('Y-m-d h:i:s') }}"
+{% endfor %}

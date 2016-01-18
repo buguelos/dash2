@@ -1,0 +1,29 @@
+{% extends "base.twig.html" %}
+
+
+{% block content %}
+<h2>Confirm delete</h2>
+<hr />
+
+<form method="POST">
+<div class="alert text-center">
+<p>
+{{ msg }}
+</p>
+
+<p>
+Are you sure?
+</p>
+
+<div>
+	<button type="submit" name="yes" value="Yes" class="btn btn-large btn-danger">Yes</button>
+	<button type="submit" name="no" value="Cancel" class="btn btn-large">Cancel</button>
+</div>
+
+</div>
+</form>
+
+{% endblock %}
+
+
+

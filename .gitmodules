@@ -1,0 +1,3 @@
+[submodule "vendor/WhatsAPI"]
+	path = vendor/WhatsAPI
+	url = https://github.com/venomous0x/WhatsAPI

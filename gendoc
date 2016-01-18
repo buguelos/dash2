@@ -1,0 +1,24 @@
+#!/bin/sh
+rm -rf docs/doxygen
+doxygen doxygen_user.cfg
+cp gitgis.sty docs/doxygen/latex
+#cp -f ./docs/user/*.png ./docs/doxygen/latex
+cd docs/doxygen/latex && make
+gitgis-marker refman.pdf ../../user_manual.pdf
+cd -
+
+rm -rf docs/doxygen
+doxygen doxygen_admin.cfg
+cp gitgis.sty docs/doxygen/latex
+#cp -f ./docs/admin/*.png ./docs/doxygen/latex
+cd docs/doxygen/latex && make
+gitgis-marker refman.pdf ../../admin_manual.pdf
+cd -
+
+rm -rf docs/doxygen
+doxygen doxygen.cfg
+cp gitgis.sty docs/doxygen/latex
+#cp -f ./docs/dev/*.png ./docs/doxygen/latex
+cd docs/doxygen/latex && make
+gitgis-marker refman.pdf ../../dev_manual.pdf
+cd -

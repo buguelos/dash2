@@ -1,0 +1,89 @@
+{% extends "base.twig.html" %}
+
+
+{% block content %}
+<div class="pull-right">
+<div class="btn-group">
+	<a class="btn btn-large" href="{{ MAINURL }}/messages/send_text" ><i class="icon-file-text-alt"></i> New text message</a>
+	<a class="btn btn-large" href="{{ MAINURL }}/messages/send_photo" ><i class="icon-picture"></i> New photo message</a>
+	<a class="btn btn-large" href="{{ MAINURL }}/messages/send_video" ><i class="icon-facetime-video"></i> New video message</a>
+	<a class="btn btn-large" href="{{ MAINURL }}/messages/send_audio" ><i class="icon-volume-up"></i> New audio message</a>
+</div>
+</div>
+
+<div class="clearfix"></div>
+<hr />
+
+{% if result.total > 0 %}
+
+<table class="table table-bordered table-stripped">
+<thead>
+
+<tr>
+<th>Message</th>
+</tr>
+</thead>
+<tbody>
+
+{% for item in result.list %}
+<tr>
+<td data-href="{{ MAINURL }}/messages/edit/{{ item.id }}">
+
+<div>
+
+<div class="pull-right text-right">
+<small>
+Modified at: {{ item.ctime | date }} by {{ users['list'][item.userId].username }}
+</small>
+
+<div>
+{% if item.max_status == 0 %}
+<a class="btn btn-danger" href="{{ MAINURL }}/messages/delete/{{ item.id }}"><i class="icon-trash"></i> Remove</a>
+{% endif %}
+</div>
+
+</div>
+
+
+
+<dl class='dl-horizontal'>
+<dt>To:</dt>
+<dd>{% if not item.groupId %}-- Not selected --{% endif %} {{ groups['list'][item.groupId].nickname }}</dd>
+<dt>Message:</dt>
+<dd><a href="{{ MAINURL }}/messages/edit/{{ item.id }}">{{ item.dataHuman }}</a>&nbsp;</dd>
+
+{% if item.stime %}
+<dt>Schedule at:</dt>
+<dd>{{ item.stime | date }}&nbsp;</dd>
+{% endif %}
+<dt>Last status:</dt>
+<dd>
+{% if item.max_status == 0 %}
+<span class="badge">Draft</span>
+{% elseif item.max_status == 8 %}
+<span class="badge badge-error">Error</span>
+{% elseif item.max_status == 4 %}
+<span class="badge badge-info">Sent</span>
+{% elseif item.max_status == 5 %}
+<span class="badge badge-success">Received</span>
+{% endif %}
+</dd>
+</dl>
+
+</div>
+
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% include 'pager.twig.html' %}
+
+{% else %}
+<div class="alert alert-error">
+No messages found
+</div>
+{% endif %}
+
+{% endblock %}

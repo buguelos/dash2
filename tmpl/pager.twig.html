@@ -1,0 +1,41 @@
+{% block pagination %}
+<div class='pagination pagination-centered' >
+	<ul>
+{% if (pager.page > pager.margin+1) %}
+		<li>
+			<a href="{{ pager.createHref(0) }}">&laquo;</a>
+		</li>
+{% endif %}
+
+{% for page in range(pager.startPage, pager.page - 1) %}
+{% if (pager.startPage <= pager.page - 1) %}
+		<li>
+			<a href="{{ pager.createHref(page) }}" >{{ page + 1 }}</a>
+		</li>
+{% endif %}
+{% endfor %}
+
+		<li class='active'><a href="{{ pager.createHref(pager.page) }}" >{{ pager.page + 1 }}</a></li>
+
+{% if (pager.total == -1) and (pager.count >= pager.pageSize) %}
+		<li>
+			<a href="{{ pager.createHref(pager.page + 1) }}">...</a>
+		</li>
+{% endif %}
+
+{% for page in range(pager.page+1, pager.endPage) %}
+{% if ((pager.total != -1) and (pager.page+1 <= pager.endPage)) %}
+		<li>
+			<a href="{{ pager.createHref(page) }}" >{{ page + 1 }}</a>
+		</li>
+{% endif %}
+{% endfor %}
+
+{% if ((pager.total != -1) and (pager.endPage < pager.lastPage) and (pager.page < pager.lastPage)) %}
+		<li>
+			<a href="{{ pager.createHref(pager.lastPage) }}">&raquo;</a>
+		</li>
+{% endif %}
+	</ul>
+</div>
+{% endblock %}

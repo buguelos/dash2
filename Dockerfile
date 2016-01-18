@@ -1,0 +1,1 @@
+FROM gitgis/php-webapp

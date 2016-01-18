@@ -1,0 +1,4 @@
+"Sender","From","Message","Time"
+{% for row in reportTable %}
+"{{ row.to }}","{{ row.from }}","{{ row.data }}","{{ row.ctime | date('Y-m-d h:i:s') }}"
+{% endfor %}

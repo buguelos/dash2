@@ -1,0 +1,92 @@
+{% extends "base.twig.html" %}
+
+
+{% block content %}
+<h2>Sender edit</h2>
+<hr />
+
+{% if errors %}
+<div class="alert alert-error">
+{% for fieldErrors in errors %}
+{% for fieldError in fieldErrors %}
+{{ fieldError }}<br/>
+{% endfor %}
+{% endfor %}
+</div>
+{% endif %}
+
+{% if flash['info'] %}
+<div class="alert alert-info">
+    {{ flash['info'] }}
+</div>
+{% endif %}
+
+<form class="form-horizontal" method="POST">
+{% if not id %}
+	<div class="control-group">
+		<label class="control-label" for="inputUsername">MSISDN</label>
+		<div class="controls">
+			<input name="username" value="{{ item.username }}" type="text" id="inputUsername" placeholder="MSISDN" />
+			<span class="help-inline">With country prefix, <strong>without</strong> + or 00</span>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="inputNickname">Nickname</label>
+		<div class="controls">
+			<input name="nickname" value="{{ item.nickname }}" type="text" id="inputNickname" placeholder="Nickname" />
+		</div>
+	</div>
+{% else %}
+	<div class="control-group">
+		<label class="control-label" for="inputUsername">MSISDN</label>
+		<div class="controls">
+			<input name="username" value="{{ item.username }}" type="text" id="inputUsername" readonly="readonly" placeholder="MSISDN" />
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="inputNickname">Nickname</label>
+		<div class="controls">
+			<input name="nickname" value="{{ item.nickname }}" type="text" id="inputNickname" placeholder="Nickname" />
+		</div>
+	</div>
+	{% if not item.password %}
+	<div class="control-group">
+		<label class="control-label" for="inputConfirm">Confirm</label>
+		<div class="controls">
+			<a href="{{ MAINURL }}/senders/{{ id }}/smscode" class="btn"><i class="icon-key"></i> generate SMS code</a>
+			<span class="help-inline">confirmation is necessary for sending</span>
+		</div>
+	</div>
+	{% else %}
+	<div class="control-group">
+		<label class="control-label" for="inputConfirm">Revalidate</label>
+		<div class="controls">
+			<a href="{{ MAINURL }}/senders/{{ id }}/smscode" class="btn"><i class="icon-key"></i> generate SMS code</a>
+			<span class="help-inline">confirmation is necessary for sending</span>
+		</div>
+	</div>
+	{% endif %}
+{% endif %}
+
+{% if hasRole('ADMIN') %}
+	<div class="control-group">
+		<label class="control-label" for="inputOwner">Owner</label>
+		<div class="controls">
+			<select {% if statuses %}readonly="readonly"{% endif %} name="user_id" id="inputOwner" >
+{% for user in users.list %}
+				<option {% if user.id == item.userId %}selected="selected"{% endif %} value="{{ user.id }}">{{ user.username }}</option>
+{% endfor %}
+			</select>
+		</div>
+	</div>
+{% endif %}
+
+	<div class="form-actions">
+		<button type="submit" class="btn btn-primary"><i class="icon-save"></i> Save</button>
+	</div>
+</form>
+
+{% endblock %}
+
+
+

@@ -1,0 +1,172 @@
+{% extends "base.twig.html" %}
+
+{% block content %}
+<h2>Group edit</h2>
+<hr />
+
+{% if errors %}
+<div class="alert alert-error">
+{% for fieldErrors in errors %}
+{% for fieldError in fieldErrors %}
+{{ fieldError }}<br/>
+{% endfor %}
+{% endfor %}
+</div>
+{% endif %}
+
+{% if flash['info'] %}
+<div class="alert alert-info">
+    {{ flash['info'] }}
+</div>
+{% endif %}
+
+<form class="form-horizontal" method="POST">
+	<div class="control-group">
+		<label class="control-label" for="inputNickname">Nickname</label>
+		<div class="controls">
+			<input name="nickname" value="{{ item.nickname }}" type="text" id="inputNickname" placeholder="Nickname" />
+		</div>
+	</div>
+
+{% if hasRole('ADMIN') %}
+	<div class="control-group">
+		<label class="control-label" for="inputOwner">Owner</label>
+		<div class="controls">
+			<select {% if statuses %}readonly="readonly"{% endif %} name="user_id" id="inputOwner" >
+{% for user in users.list %}
+				<option {% if user.id == item.userId %}selected="selected"{% endif %} value="{{ user.id }}">{{ user.username }}</option>
+{% endfor %}
+			</select>
+		</div>
+	</div>
+{% endif %}
+
+	<div class="form-actions">
+        <button type="submit" class="btn btn-primary"><i class="icon-save"></i> Save</button>
+        {% if id %}
+        <button type="submit" class="btn btn-warning" name="force_sync" value="Save and sync"><i class="icon-save"></i> Save &amp; sync</button>
+        {% endif %}
+	</div>
+</form>
+
+{% if id %}
+<h2>User senders</h2>
+
+{% if not senders.list %}
+<div class="alert alert-warning">
+    User has no senders
+</div>
+{% else %}
+<ul>
+    {% for sender in senders.list %}
+    <li>{{ sender.username }} {% if sender.flags b-and 1 %}<span class="badge">synchronizing</span>{% endif %} </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+<h2>Numbers</h2>
+
+<form action="{{ MAINURL }}/groups/{{ id }}/upload" class="file-upload" method='post' enctype='multipart/form-data'>
+    <div class="fallback">
+        <input name="file" type="file" />
+        <button type="submit">upload</button>
+    </div>
+    <div class="info">
+        <i class="icon-upload"></i>
+        Drag and drop file here (or click to upload)
+    </div>
+</form>
+
+
+<h4>Registerd to Whatsapp</h4>
+<a href="{{ MAINURL }}/groups/export_numbers/{{ item.id }}?mode=registered"><i class="icon-save"></i> Export</a>
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+
+    <tr>
+        <th class="span3">MSISDN</th>
+        <th>Nickname</th>
+        <th>Synced</th>
+        <th class="span3"></th>
+    </tr>
+
+    </thead>
+    <tbody>
+
+    {% for target, number in numbersRegistered %}
+    <tr>
+        <td>
+
+            {% if duplicates[target] > 1 %}
+            <a href="{{ MAINURL }}/groups?search={{ target }}">
+                {{ target }}
+                <span class="badge badge-warning"><i class="icon-exclamation"></i> Duplicate</span>
+            </a>
+            {% else %}
+            {{ target }}
+            {% endif %}
+
+        </td>
+        <td>{{ number.nickname }}</td>
+        <td>
+            {% if number.synced %}
+            <i class="icon-ok"></i> Whatsapp account
+            {% endif %}
+        </td>
+        <td><a class="btn btn-danger" href="{{ MAINURL }}/groups/{{ item.id }}/delete_number?number={{ target }}"><i class='icon-remove'></i> Delete</a></td>
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+
+{% include 'pager.twig.html' with {'pager': pager1} %}
+
+<h4>Not registerd to Whatsapp</h4>
+<a href="{{ MAINURL }}/groups/export_numbers/{{ item.id }}?mode=unregistered"><i class="icon-save"></i> Export</a>
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+
+    <tr>
+        <th class="span3">MSISDN</th>
+        <th>Nickname</th>
+        <th>Synced</th>
+        <th class="span3"></th>
+    </tr>
+
+    </thead>
+    <tbody>
+
+    {% for target, number in numbersUnregistered %}
+    <tr>
+        <td>
+
+            {% if duplicates[target] > 1 %}
+            <a href="{{ MAINURL }}/groups?search={{ target }}">
+                {{ target }}
+                <span class="badge badge-warning"><i class="icon-exclamation"></i> Duplicate</span>
+            </a>
+            {% else %}
+            {{ target }}
+            {% endif %}
+
+        </td>
+        <td>{{ number.nickname }}</td>
+        <td>
+            {% if number.synced %}
+            <i class="icon-ok"></i> Whatsapp account
+            {% endif %}
+        </td>
+        <td><a class="btn btn-danger" href="{{ MAINURL }}/groups/{{ item.id }}/delete_number?number={{ target }}"><i class='icon-remove'></i> Delete</a></td>
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+
+{% include 'pager.twig.html' with {'pager': pager2} %}
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,4 @@
+#!/bin/bash
+MAINDIR=$(realpath $(dirname $0)/..)
+
+docker build -t gitgis/whatsapp.dev $MAINDIR

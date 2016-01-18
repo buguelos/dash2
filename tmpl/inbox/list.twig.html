@@ -1,0 +1,55 @@
+{% extends "base.twig.html" %}
+
+
+{% block content %}
+<form class="form-search">
+	From:
+	<input type="text" name="search" autofocus="autofocus" value="{{ query['search'] }}" />
+	<button class='btn ptn-primary' type="submit" value="Search"><i class='icon-search'></i> Search</button>
+</form>
+
+{% if result.total > 0 %}
+
+<table class="table table-bordered table-stripped">
+<thead>
+
+<tr>
+<th>Message</th>
+</tr>
+</thead>
+<tbody>
+
+{% for item in result.list %}
+<tr>
+<td>
+
+<div>
+
+<dl class='dl-horizontal'>
+<dt>From:</dt>
+<dd>[{{ item.from }}] {{ item.fromNickname }}</dd>
+<dt>To:</dt>
+<dd>[{{ item.to }}] {{ item.toNickname }}</dd>
+<dt>Message:</dt>
+<dd>{{ item.data }}&nbsp;</dd>
+<dt>Time:</dt>
+<dd>{{ item.ctime | date('Y-m-d H:i:s') }}&nbsp;</dd>
+</dl>
+
+</div>
+
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% include 'pager.twig.html' %}
+
+{% else %}
+<div class="alert alert-error">
+No messages found
+</div>
+{% endif %}
+
+{% endblock %}

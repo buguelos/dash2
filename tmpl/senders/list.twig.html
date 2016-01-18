@@ -1,0 +1,55 @@
+{% extends "base.twig.html" %}
+
+
+{% block content %}
+<div class="pull-right">
+    {% if user_result.total == 0  %}
+<span class="alert">
+No Senders for <strong>{{ user.username }}</strong>. Create at least one <i class="icon-arrow-right"></i>
+</span>
+{% endif %}
+	<div class="btn-group">
+	<a class="btn btn-large" href="{{ MAINURL }}/senders/edit/0" ><i class="icon-plus"></i> New Sender</a>
+	</div>
+</div>
+
+<form class="form-search">
+	<input type="text" name="search" autofocus="autofocus" value="{{ query['search'] }}" />
+	<button class='btn ptn-primary' type="submit" value="Search"><i class='icon-search'></i> Search</button>
+</form>
+
+<table class="table table-bordered table-striped table-hover">
+<thead>
+
+<tr>
+<th class="span3">MSISDN</th>
+    <th>Nickname</th>
+    <th>Owner</th>
+    <th class="span3"></th>
+</tr>
+
+</thead>
+<tbody>
+
+{% for item in result.list %}
+<tr>
+    <td>{{ item.username }}</td>
+    <td>{{ item.nickname }} {% if not item.password %}<span class="badge badge-warning">Not confirmed</span>{% endif %}</td>
+    <td>{{ users.list[item.userId].username }}</td>
+    <td>
+    <a class="btn" href="{{ MAINURL }}/senders/edit/{{ item.id }}"><i class='icon-edit'></i> Edit</a>
+
+    {% if hasRole('ADMIN') %}
+    <a class="btn btn-danger" href="{{ MAINURL }}/senders/delete/{{ item.id }}"><i class="icon-trash"></i> Remove</a>
+    {% endif %}
+
+    </td>
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+
+{% include 'pager.twig.html' %}
+
+{% endblock %}

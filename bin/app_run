@@ -1,0 +1,4 @@
+#!/bin/bash
+MAINDIR=$(realpath $(dirname $0)/..)
+
+docker run --link mysql:mysql -v $MAINDIR:/var/www:rw -v $MAINDIR/_log:/var/log/nginx:rw -p 80:80 gitgis/whatsapp.dev /sbin/my_init --enable-insecure-key

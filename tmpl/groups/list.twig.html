@@ -1,0 +1,53 @@
+{% extends "base.twig.html" %}
+
+
+{% block content %}
+<div class="pull-right">
+{% if user_result.total == 0  %}
+<span class="alert">
+No groups for <strong>{{ user.username }}</strong>. Create at least one <i class="icon-arrow-right"></i>
+</span>
+{% endif %}
+	<div class="btn-group">
+	<a class="btn btn-large" href="{{ MAINURL }}/groups/edit/0" ><i class="icon-plus"></i> New Group</a>
+	</div>
+</div>
+
+<form class="form-search">
+	<input type="text" name="search" autofocus="autofocus" value="{{ query['search'] }}" />
+	<button class='btn ptn-primary' type="submit" value="Search"><i class='icon-search'></i> Search</button>
+</form>
+
+<table class="table table-bordered table-striped table-hover">
+<thead>
+
+<tr>
+    <th>Nickname</th>
+    <th>Owner</th>
+    <th class="span3"></th>
+</tr>
+
+</thead>
+<tbody>
+
+{% for item in result.list %}
+<tr>
+    <td>{{ item.nickname }}</td>
+    <td>{{ users.list[item.userId].username }}</td>
+    <td>
+    <a class="btn" href="{{ MAINURL }}/groups/edit/{{ item.id }}"><i class='icon-edit'></i> Edit</a>
+
+    {% if hasRole('ADMIN') %}
+    <a class="btn btn-danger" href="{{ MAINURL }}/groups/delete/{{ item.id }}"><i class="icon-trash"></i> Remove</a>
+    {% endif %}
+
+    </td>
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+
+{% include 'pager.twig.html' %}
+
+{% endblock %}

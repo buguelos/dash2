@@ -1,0 +1,68 @@
+{% extends "base.twig.html" %}
+
+{% block content %}
+
+<div class="pull-left">
+    <form class="form-search">
+        <input type="text" name="search" autofocus="autofocus" value="{{ query['search'] }}" />
+        <button class='btn ptn-primary' type="submit" value="Search"><i class='icon-search'></i> Search</button>
+    </form>
+
+    <div class="btn-group">
+        {% if app.request.get('deleted') %}
+        <a class="btn" href="{{ MAINURL }}/users" ><i class="icon-group"></i> Show not deleted users</a>
+        {% else %}
+        <a class="btn" href="{{ MAINURL }}/users?deleted=1" ><i class="icon-trash"></i> Show deleted users</a>
+        {% endif %}
+    </div>
+</div>
+
+
+<div class="pull-right">
+<div class="btn-group">
+	<a class="btn btn-large" href="{{ MAINURL }}/users/edit/0" ><i class="icon-plus"></i> New User</a>
+</div>
+</div>
+
+<div class="clearfix"></div>
+<hr />
+
+<table class="table table-bordered table-striped table-hover">
+<thead>
+
+<tr>
+<th>Login</th>
+<th>Roles</th>
+<th>Created</th>
+{% if app.request.get('deleted') %}
+<th>Deleted</th>
+{% endif %}
+<th class="span3"></th>
+</tr>
+
+</thead>
+<tbody>
+
+{% for item in result.list %}
+<tr>
+<td>{{ item.username }}</td>
+<td>{{ item.roles }}</td>
+<td>{% if item.ctime %}{{ item.ctime | date('Y-m-d H:i:s') }}{% endif %}</td>
+{% if app.request.get('deleted') %}
+<td>{% if item.dtime %}{{ item.dtime | date('Y-m-d H:i:s') }}{% endif %}</td>
+{% endif %}
+<td>
+{% if item.dtime == 0 %}
+<a class="btn" href="{{ MAINURL }}/users/edit/{{ item.id }}"><i class='icon-edit'></i> Edit</a>
+<a class="btn btn-danger" href="{{ MAINURL }}/users/delete/{{ item.id }}"><i class='icon-trash'></i> Delete</a>
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+
+{% include 'pager.twig.html' %}
+
+{% endblock %}

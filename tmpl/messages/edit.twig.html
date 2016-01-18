@@ -1,0 +1,224 @@
+{% extends "base.twig.html" %}
+
+
+{% block content %}
+<h2>Message edit</h2>
+<hr />
+
+{% if errors %}
+<div class="alert alert-error">
+{% for fieldErrors in errors %}
+{% for fieldError in fieldErrors %}
+{{ fieldError }}<br/>
+{% endfor %}
+{% endfor %}
+</div>
+{% endif %}
+
+<form class="form-horizontal" method="POST" enctype='multipart/form-data'>
+    <div class="control-group">
+        <label class="control-label" for="inputGroup">Group</label>
+        <div class="controls">
+            {% if item.groupId > 0 and not groups.list[item.groupId] %}
+            <select name="group_id" id="inputGroup" readonly="readonly">
+                <option selected="selected" value="item.groupId">{{ allGroups.list[item.groupId].nickname }}</option>
+            </select>
+            <a href="{{ MAINURL }}/groups/edit/{{ item.groupId }}">Go to group</a>
+            {% else %}
+            <select  name="group_id" id="inputGroup" {% if statuses %}readonly="readonly"{% endif %}>
+            <option value="">-- Select group --</option>
+            {% for group in groups.list %}
+            <option {% if group.id == item.groupId %}selected="selected"{% endif %} value="{{ group.id }}">{{ group.nickname }}</option>
+            {% endfor %}
+            </select>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="inputSender">Sender</label>
+        <div class="controls">
+            {% if item.senderId > 0 and not senders.list[item.senderId] %}
+            <select name="sender_id" id="inputSender" readonly="readonly">
+                <option selected="selected" value="item.senderId">{{ allSenders.list[item.senderId].nickname }}</option>
+            </select>
+            <a href="{{ MAINURL }}/senders/edit/{{ item.senderId }}">Go to sender</a>
+            {% else %}
+            <select name="sender_id" id="inputSender" {% if statuses %}readonly="readonly"{% endif %} >
+            <option value="">-- Select sender --</option>
+            {% for sender in senders.list %}
+            <option {% if sender.id == item.senderId %}selected="selected"{% endif %} value="{{ sender.id }}">[{{ sender.username }}] {{ sender.nickname }}</option>
+            {% endfor %}
+            </select>
+            {% endif %}
+        </div>
+    </div>
+
+
+
+    {% if item.kind == KIND_TEXT_MSG %}
+    <div class="control-group">
+        <label class="control-label" for="inputPers">Personalize CSV</label>
+        <div class="controls">
+            <!--<a href="{{ MAINURL }}/uploads/{{ item.data }}" target='_blank'>{{ item.dataHuman }}</a>-->
+            {% if not statuses %}
+            <div data-upload-url="{{ MAINURL }}/messages/custom_csv/{{ id }}" class="file-upload">
+                <div class="fallback">
+                    <input name="file" type="file" id="inputPers" />
+                    <button type="submit">upload</button>
+                </div>
+                <div class="info">
+                    <i class="icon-upload"></i> Drag and drop file here (or click to upload)
+                </div>
+            </div>
+            {% endif %}
+
+            {% if personalized_count %}
+            Personalized: {{ personalized_count }} / {{ numbers_count }}<br />
+            {% endif %}
+            {% if item.groupId %}
+            <a href="{{ MAINURL }}/messages/custom_csv/{{ id }}?group_id={{ item.groupId }}">Download CSV</a>
+            {% endif %}
+        </div>
+    </div>
+
+	<div class="control-group">
+		<label class="control-label" for="inputData">Message</label>
+		<div class="controls">
+			<textarea {% if statuses %}readonly="readonly"{% endif %} name="data" rows="4" cols="40" id="inputData" autofocus="autofocus" >{{ item.data }}</textarea>
+
+            Use $field1, $field2, $field3, $field4, $field5 for personalization
+		</div>
+	</div>
+{% endif %}
+
+{% if item.kind == KIND_PHOTO_MSG or item.kind == KIND_AUDIO_MSG or item.kind == KIND_VIDEO_MSG %}
+	<div class="control-group">
+		<label class="control-label" for="inputData">File</label>
+		<div class="controls">
+			<a href="{{ MAINURL }}/uploads/{{ item.data }}" target='_blank'>{{ item.dataHuman }}</a>
+			{% if not statuses %}
+			<div data-upload-url="{{ MAINURL }}/messages/upload/{{ id }}" data-upload-accepted="{{ mime }}" class="file-upload">
+				<div class="fallback">
+					<input name="file" type="file" />
+					<button type="submit">upload</button>
+				</div>
+				<div class="info">
+					<i class="icon-upload"></i> Drag and drop file here (or click to upload)
+				</div>
+			</div>
+			{% endif %}
+		</div>
+	</div>
+{% endif %}
+
+    <div class="control-group">
+		<label class="control-label" for="inputStime">Send at</label>
+		<div class="controls">
+			<input {% if statuses %}readonly="readonly"{% endif %} type="date" name="stime_date" value="{{ item.stime | date('Y-m-d') }}" id="inputStime" class="input-medium" />
+			<input {% if statuses %}readonly="readonly"{% endif %} type="time" name="stime_time" value="{{ item.stime | date('H:i:s') }}" step="1" class="input-medium" />
+		</div>
+	</div>
+
+	<div class="form-actions">
+{% if not statuses %}
+
+{% if (not hasRole('ADMIN')) and user.credits <= 0 %}
+	<div class="alert alert-error">
+	Not enough credits to send messages
+	</div>
+{% else %}
+	<button type="submit" class="btn btn-primary" name="send" value="Send"><i class="icon-envelope"></i> Send</button>
+{% endif %}
+
+{% endif %}
+	</div>
+
+    {% if senderToConfirm %}
+    <div class="alert alert-error">
+        Sender {{ senderToConfirm.username }} not verified
+        <a href="{{ MAINURL }}/senders/{{ senderToConfirm.id }}/smscode?redir={{ MAINURL }}/messages/edit/{{ item.id }}" class="btn btn-primary" ><i class="icon-key"></i> Reverify</a>
+    </div>
+    {% endif %}
+
+    {% if noReceived < noTotal or hasErrors %}
+    <div class="alert">
+        Received recipients / Sent = {{ noReceived }} / {{ noSent }}
+        <button type="submit" class="btn btn-primary" name="resend" value="Resend"><i class="icon-envelope"></i> Resend</button>
+    </div>
+
+    {% endif %}
+</form>
+
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#targets" data-toggle="tab">Targets</a></li>
+    <li><a href="#history" data-toggle="tab">History</a></li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="targets">
+
+        <table class="table table-bordered table-hover">
+{% for target, status in tableTargets %}
+        <tr>
+            <td class="span2">{{ target }}</td>
+            <td class="span2">{% if status == 4 %}SENT{% endif %}</td>
+            <td class="span2">{% if status == 5 %}SERVER{% endif %}</td>
+            <td class="span2">{% if status == 6 %}PHONE{% endif %}</td>
+        </tr>
+
+{% endfor %}
+
+
+        </table>
+
+    </div>
+    <div class="tab-pane" id="history">
+
+
+        {% if statuses %}
+        <table class="table table-border">
+            {% for status in statuses %}
+            <tr>
+                <td class="span2">{{ status.mtime | date('Y-m-d H:i:s') }}</td>
+                <td class="span3">
+                    {% if status.status == 1 %}
+                    To send
+                    {% elseif status.status == 2 %}
+                    <div class="alert alert-warning">Resend forced</div>
+                    {% elseif status.status == 16 %}
+                    <div class="alert alert-warning">Resent</div>
+                    {% elseif status.status == 4 %}
+                    <div class="alert alert-info">Sent to: {{ status.target }}</div>
+                    {% elseif status.status == 5 %}
+                    <div class="alert alert-success">Receipt server: {{ status.target }}</div>
+                    {% elseif status.status == 6 %}
+                    <div class="alert alert-success">Receipt phone: {{ status.target }}</div>
+                    {% elseif status.status == 8 %}
+                    <div class="alert alert-error">Error</div>
+                    {% endif %}
+                </td>
+                <td>
+
+                    {% if hasRole('ADMIN') and status.debug and status.status == 8 %}
+                    <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#debug{{ status.id }}">
+                        <i class="icon-bug"></i> Debug
+                    </button>
+
+                    <div id="debug{{ status.id }}" class="collapse">
+                        {{ status.debug }}
+                    </div>
+                    {% endif %}
+
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+
+    </div>
+</div>
+
+
+
+{% endblock %}
